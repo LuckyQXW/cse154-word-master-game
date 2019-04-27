@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<!--
+     Name: Wen Qiu
+     Date: May 1, 2019
+     Section: CSE 154 AJ
+     This is the index.html page for the Word Master game.
+-->
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="stylesheet" href="style.css" />
+    <script src="main.js"></script>
+    <title>Word Master</title>
+  </head>
+
+  <body>
+    <main>
+      <header>
+        <h1>Word Master</h1>
+      </header>
+      <section id="menu-view">
+        <p>
+          Welcome to 2019 Word Master Competition!<br />
+          This is a 2-player game where players take turns to give words
+          that start with the given letters.<br />
+          Lets find out who is the REAL Word Master!
+        </p>
+        <section id="rules">
+          <div class="instruction-row">
+            <div class="submit">
+              <p>Submit</p>
+            </div>
+            <p>Enter the word in the text box then click submit to show off your
+              great storage of vocabulary! No repeat! You will have 5 seconds.
+            </p>
+          </div>
+          <div class="instruction-row">
+            <div class="challenge">
+              <p>Challenge!</p>
+            </div>
+            <p>If you believe the word given by your opponent is not valid, you
+              have 3 seconds to challenge them!
+            </p>
+          </div>
+          <div class="instruction-row">
+            <button id="challenge">Challenge!</button>
+            <p>A player wins if:</p>
+            <ol>
+              <li>Opponent fails to give a valid word within time constraint</li>
+              <li>Successfully challenges the word of their opponent</li>
+            </ol>
+          </div>
+        </section>
+        <button id="start">START!</button>
+      </section>
+
+      <section id="canvas" class="flex">
+        <div class="player">
+          <img src="img/player1.png" alt="player1" />
+          <input id="player1-input" type="text"></input>
+          <button id="submit-btn" class="submit">Submit</button>
+        </div>
+        <div id="answer">
+        </div>
+        <div class="player">
+          <img src="img/player2.png" alt="player2" />
+          <input id="player2-input" type="text"></input>
+          <button id="challenge-btn" class="challenge">Submit</button>
+        </div>
+      </section>
+      <button id="start-over">Start Over!</button>
+    </main>
+  </body>
+</html>
