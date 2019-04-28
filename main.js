@@ -13,6 +13,8 @@
   let currentPrompt = "";
   let currentWord = "";
   const PROMPTS = ["DEF", "AB"];
+  const URL = "https://www.dictionaryapi.com/api/v3/references/collegiate/json/";
+  const API_KEY = "?key=e3135f72-2567-48c9-a6e6-ae4a3ef6b4b9"
   window.addEventListener("load", init);
 
   /**
@@ -45,6 +47,8 @@
   function resetCanvas() {
     id("countdown").textContent = "Game starting in " + currentTime + " sec...";
     id("game-result").classList.add("hidden");
+    id("start-over").classList.add("hidden");
+
     let currentResponse = qs("input.player" + getCurrentPlayer());
     let currentAnswerBox = qs("#player" + getCurrentPlayer() + "-ans p");
     currentAnswerBox.textContent = "I will start first!";
@@ -54,6 +58,7 @@
     let otherAnswerBox = qs("#player" + getOtherPlayer() + "-ans p");
     otherAnswerBox.textContent = "";
     otherResponse.value = "";
+
   }
 
   /**
@@ -208,12 +213,7 @@
   function challenge() {
     // Checks if the word given by the other player is valid (API calls)
     clearTimer();
-    if(currentWord === "") {
-      displayWinner(getOtherPlayer());
-    } else {
-      displayWinner(getCurrentPlayer());
-    }
-
+    getAjaxData();
   }
 
   /**
@@ -221,8 +221,13 @@
    * @param  {int} winner - the winner of the game, 1 or 2
    */
   function displayWinner(winner) {
-    qs("#game-result p").textContent = "Player " + winner + " wins!";
+    clearTimer();
+    id("game-result").innerHTML = "";
+    let result = document.createElement("p");
+    result.textContent = "Player " + winner + " wins!";
+    id("game-result").appendChild(result);
     id("game-result").classList.remove("hidden");
+    id("start-over").classList.remove("hidden");
   }
 
   /**
@@ -259,6 +264,46 @@
   function backToMenu() {
     id("menu-view").classList.remove("hidden");
     id("game-view").classList.add("hidden");
+    qs("h1").textContent = "Word Master";
+  }
+
+  /**
+   * Fetch the definition of the word
+   */
+  function getAjaxData(){
+    clearTimer();
+    let url = URL + currentWord + API_KEY;
+
+    //start ajax call
+    fetch(url)
+      .then(checkStatus)
+      .then(JSON.parse) // parse the json so the next "then" gets a JSON object
+      .then(processJson)
+      .catch((error) => {
+        displayWinner(getOtherPlayer());
+        let description = document.createElement("p");
+        description.textContent = currentWord + " is NOT a valid word!";
+        id("game-result").append(description);
+      });
+  }
+
+  /**
+   *
+   * @param json - the JSON object that is was returned from the server
+   */
+  function processJson(json){
+    displayWinner(getCurrentPlayer());
+    let shortDef = json[0]["shortdef"];
+    let def = document.createElement("p");
+    def.textContent = "Definition of " + currentWord + ":";
+    id("game-result").appendChild(def);
+    let list = document.createElement("ol");
+    for(let i = 0; i < shortDef.length; i++) {
+      let item = document.createElement("li");
+      item.textContent = shortDef[i];
+      list.appendChild(item);
+    }
+    id("game-result").appendChild(list);
   }
 
   /**
@@ -287,4 +332,19 @@
   function qsa(selector) {
     return document.querySelectorAll(selector);
   }
+
+  /**
+    * Helper function to return the response's result text if successful, otherwise
+    * returns the rejected Promise result with an error status and corresponding text
+    * @param {object} response - response to check for success/error
+    * @returns {object} - valid result text if response was successful, otherwise rejected
+    *                     Promise result
+    */
+   function checkStatus(response) {
+     if (response.status >= 200 && response.status < 300 || response.status == 0) {
+       return response.text();
+     } else {
+       return Promise.reject(new Error(response.status + ": " + response.statusText));
+     }
+   }
 })();
