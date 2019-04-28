@@ -3,7 +3,7 @@
      Name: Wen Qiu
      Date: May 1, 2019
      Section: CSE 154 AJ
-     This is the index.html page for the Word Master game.
+     This is the index.html page for the Word Master game
 -->
 <html lang="en">
   <head>
@@ -14,10 +14,10 @@
   </head>
 
   <body>
+    <header>
+      <h1>Word Master</h1>
+    </header>
     <main>
-      <header>
-        <h1>Word Master</h1>
-      </header>
       <section id="menu-view">
         <p>
           Welcome to 2019 Word Master Competition!<br />
@@ -27,48 +27,65 @@
         </p>
         <section id="rules">
           <div class="instruction-row">
-            <div class="submit">
-              <p>Submit</p>
+            <div id="submit-img">
+              <span>Submit</span>
             </div>
             <p>Enter the word in the text box then click submit to show off your
-              great storage of vocabulary! No repeat! You will have 5 seconds.
+              great storage of vocabulary! No repeat!<br />
+              You will have 5 seconds.
             </p>
           </div>
           <div class="instruction-row">
-            <div class="challenge">
-              <p>Challenge!</p>
+            <div id="challenge-img">
+              <span>Challenge!</span>
             </div>
             <p>If you believe the word given by your opponent is not valid, you
-              have 3 seconds to challenge them!
+              can challenge them!<br />
+              You will have 3 seconds.
             </p>
           </div>
-          <div class="instruction-row">
-            <button id="challenge">Challenge!</button>
-            <p>A player wins if:</p>
-            <ol>
+          <div class="instruction-row" id="win-condition">
+            <ol>A player wins if:
               <li>Opponent fails to give a valid word within time constraint</li>
               <li>Successfully challenges the word of their opponent</li>
             </ol>
           </div>
         </section>
         <button id="start">START!</button>
+        <footer>
+          Credit to blah blah blah
+        </footer>
       </section>
 
-      <section id="canvas" class="flex">
-        <div class="player">
-          <img src="img/player1.png" alt="player1" />
-          <input id="player1-input" type="text"></input>
-          <button id="submit-btn" class="submit">Submit</button>
+      <section id="game-view" class="flex hidden">
+        <h2 id="countdown">Game starting in 5 sec...</h2>
+        <div id="canvas" class="flex">
+          <div class="player flex">
+            <img src="img/player1.png" alt="player1" />
+            <input class="player1" type="text" disabled></input>
+            <button class="submit player1" disabled>Submit</button>
+          </div>
+          <div id="middle" class="flex">
+            <div id="answer-area" class="flex">
+              <div id="player1-ans" class="answer">
+                <p>I will start first!</p>
+              </div>
+              <div id="player2-ans" class="answer">
+                <p></p>
+              </div>
+            </div>
+            <div id="game-result" class="hidden">
+              <p>Player 2 wins!</p>
+            </div>
+          </div>
+          <div class="player flex">
+            <img src="img/player2.png" alt="player2" />
+            <input class="player2" type="text" disabled></input>
+            <button class="challenge player2" disabled>Challenge!</button>
+          </div>
         </div>
-        <div id="answer">
-        </div>
-        <div class="player">
-          <img src="img/player2.png" alt="player2" />
-          <input id="player2-input" type="text"></input>
-          <button id="challenge-btn" class="challenge">Submit</button>
-        </div>
+        <button id="start-over">Start Over!</button>
       </section>
-      <button id="start-over">Start Over!</button>
     </main>
   </body>
 </html>
