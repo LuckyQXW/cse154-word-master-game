@@ -107,6 +107,10 @@ button.player1, button.player2 {
   width: 200px;
 }
 
+#start-over {
+  margin-top: 20px;
+}
+
 .hidden {
   display: none;
 }

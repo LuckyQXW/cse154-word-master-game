@@ -14,7 +14,7 @@
   let currentWord = "";
   const PROMPTS = ["DEF", "AB"];
   const URL = "https://www.dictionaryapi.com/api/v3/references/collegiate/json/";
-  const API_KEY = "?key=e3135f72-2567-48c9-a6e6-ae4a3ef6b4b9"
+  const API_KEY = "?key=e3135f72-2567-48c9-a6e6-ae4a3ef6b4b9";
   window.addEventListener("load", init);
 
   /**
@@ -26,6 +26,18 @@
     id("start-over").addEventListener("click", backToMenu);
     qs("button.player1").addEventListener("click", submit);
     qs("button.player2").addEventListener("click", challenge);
+    qs("input.player1").addEventListener("keyup", function(event) {
+      const keyName = event.key;
+      if (keyName === "Enter") {
+        submit();
+      }
+    });
+    qs("input.player2").addEventListener("keyup", function(event) {
+      const keyName = event.key;
+      if (keyName === "Enter") {
+        submit();
+      }
+    });
   }
 
   /**
@@ -93,7 +105,7 @@
     id("countdown").textContent = "Game starting in " + currentTime + " sec...";
     if(currentTime === 0) {
       id("countdown").textContent = "Game start!"
-      getPrompt()
+      getPrompt();
       clearTimer();
       setTimeout(startRound, 1000);
     }
@@ -213,7 +225,15 @@
   function challenge() {
     // Checks if the word given by the other player is valid (API calls)
     clearTimer();
-    getAjaxData();
+    if(currentWord.toUpperCase().startsWith(currentPrompt)) {
+      getAjaxData();
+    } else {
+      displayWinner(getOtherPlayer());
+      let result = document.createElement("p");
+      result.textContent = currentWord+ " does not start with "
+        + currentPrompt;
+      id("game-result").appendChild(result);
+    }
   }
 
   /**
@@ -272,7 +292,7 @@
    */
   function getAjaxData(){
     clearTimer();
-    let url = URL + currentWord + API_KEY;
+    let url = URL + currentWord.toLowerCase() + API_KEY;
 
     //start ajax call
     fetch(url)
@@ -295,7 +315,7 @@
     displayWinner(getCurrentPlayer());
     let shortDef = json[0]["shortdef"];
     let def = document.createElement("p");
-    def.textContent = "Definition of " + currentWord + ":";
+    def.textContent = "Definition of " + currentWord.toLowerCase() + ":";
     id("game-result").appendChild(def);
     let list = document.createElement("ol");
     for(let i = 0; i < shortDef.length; i++) {
