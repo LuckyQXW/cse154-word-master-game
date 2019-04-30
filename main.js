@@ -18,6 +18,10 @@
                    "LE", "MO", "NU", "PR", "QE", "RA", "SW", "TI", "WI", "YE"];
   const BASE_URL = "https://www.dictionaryapi.com/api/v3/references/collegiate/json/";
   const API_KEY = "?key=e3135f72-2567-48c9-a6e6-ae4a3ef6b4b9";
+  const ROUND_TIME = 5;
+  const CHALLENGE_TIME = 3;
+  const SECOND = 1000;
+
   window.addEventListener("load", init);
 
   /**
@@ -35,6 +39,7 @@
         submit();
       }
     });
+    // Enables submission with enter key stroke
     qs("input.player2").addEventListener("keyup", function(event) {
       const keyName = event.key;
       if (keyName === "Enter") {
@@ -49,13 +54,13 @@
   function startGame() {
     usedWords.clear();
     currentWord = null;
-    currentTime = 5;
+    currentTime = ROUND_TIME;
     playerOne = true;
     resetCanvas();
     id("game-view").classList.remove("hidden");
     id("menu-view").classList.add("hidden");
     qs("h1").textContent = "Pick your player";
-    timerID = setInterval(updatePrepTimer, 1000);
+    timerID = setInterval(updatePrepTimer, SECOND);
   }
 
   /**
@@ -112,7 +117,7 @@
       id("countdown").textContent = "Game start!";
       getPrompt();
       clearTimer();
-      setTimeout(startRound, 1000);
+      setTimeout(startRound, SECOND);
     }
   }
 
@@ -156,14 +161,14 @@
    * Starts the round and enables the player controls
    */
   function startRound() {
-    currentTime = 5;
+    currentTime = ROUND_TIME;
     if(currentWord != null) {
       usedWords.add(currentWord);
     }
     toggleRoundControls();
     qs("input.player" + getCurrentPlayer()).focus();
     updateRoundText();
-    timerID = setInterval(updateRoundTimer, 1000);
+    timerID = setInterval(updateRoundTimer, SECOND);
   }
 
   /**
@@ -186,10 +191,10 @@
    */
   function startChallenge() {
     clearTimer();
-    currentTime = 3;
+    currentTime = CHALLENGE_TIME;
     toggleChallengeControls();
     updateChallengeText();
-    timerID = setInterval(updateChallengeTimer, 1000);
+    timerID = setInterval(updateChallengeTimer, SECOND);
   }
 
   /**
@@ -305,7 +310,7 @@
   }
 
   /**
-   * Fetch the definition of the word
+   * Fetch the definition of the word, modified from Apod template
    */
   function getAjaxData(){
     clearTimer();
@@ -314,7 +319,7 @@
     //start ajax call
     fetch(url)
       .then(checkStatus)
-      .then(JSON.parse) // parse the json so the next "then" gets a JSON object
+      .then(JSON.parse)
       .then(processJson)
       .catch(() => {
         displayWinner(getOtherPlayer());
@@ -363,6 +368,7 @@
   /**
     * Helper function to return the response's result text if successful, otherwise
     * returns the rejected Promise result with an error status and corresponding text
+    * Used the template from spec
     * @param {object} response - response to check for success/error
     * @returns {object} - valid result text if response was successful, otherwise rejected
     *                     Promise result
