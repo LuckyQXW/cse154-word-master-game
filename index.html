@@ -26,8 +26,8 @@
           Lets find out who is the REAL Word Master!
         </p>
         <section id="rules">
-          <div class="instruction-row">
-            <div id="submit-img">
+          <div class="instruction-row flex">
+            <div id="submit-img" class="flex">
               <span>Submit</span>
             </div>
             <p>Enter the word in the text box then click submit to show off your
@@ -35,8 +35,8 @@
               You will have 5 seconds.
             </p>
           </div>
-          <div class="instruction-row">
-            <div id="challenge-img">
+          <div class="instruction-row flex">
+            <div id="challenge-img" class="flex">
               <span>Challenge!</span>
             </div>
             <p>If you believe the word given by your opponent is not valid, you
@@ -44,8 +44,9 @@
               You will have 3 seconds.
             </p>
           </div>
-          <div class="instruction-row" id="win-condition">
-            <ol>A player wins if:
+          <div class="instruction-row flex" id="win-condition">
+            <p>A player wins if:</p>
+            <ol>
               <li>Opponent fails to give a valid word within time constraint</li>
               <li>Successfully challenges the word of their opponent</li>
             </ol>
@@ -62,7 +63,7 @@
         <div id="canvas" class="flex">
           <div class="player flex">
             <img src="img/player1.png" alt="player1" />
-            <input class="player1" type="text" disabled></input>
+            <input class="player1" type="text" disabled />
             <button class="submit player1" disabled>Submit</button>
           </div>
           <div id="middle" class="flex">
@@ -80,7 +81,7 @@
           </div>
           <div class="player flex">
             <img src="img/player2.png" alt="player2" />
-            <input class="player2" type="text" disabled></input>
+            <input class="player2" type="text" disabled />
             <button class="challenge player2" disabled>Challenge!</button>
           </div>
         </div>

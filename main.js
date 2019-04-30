@@ -13,7 +13,7 @@
   let currentPrompt = "";
   let currentWord = "";
   const PROMPTS = ["DEF", "AB"];
-  const URL = "https://www.dictionaryapi.com/api/v3/references/collegiate/json/";
+  const BASE_URL = "https://www.dictionaryapi.com/api/v3/references/collegiate/json/";
   const API_KEY = "?key=e3135f72-2567-48c9-a6e6-ae4a3ef6b4b9";
   window.addEventListener("load", init);
 
@@ -75,7 +75,7 @@
 
   /**
    * Gets the id of the player owning the current round
-   * @return id of the player owning the current round
+   * @return {int} id of the player owning the current round
    */
   function getCurrentPlayer() {
     return playerOne ? 1 : 2;
@@ -83,7 +83,7 @@
 
   /**
    * Gets the id of the opponent of the player owning the current round
-   * @return id of the opponent of the player owning the current round
+   * @return {int} id of the opponent of the player owning the current round
    */
   function getOtherPlayer() {
     return playerOne ? 2 : 1;
@@ -104,7 +104,7 @@
     currentTime--;
     id("countdown").textContent = "Game starting in " + currentTime + " sec...";
     if(currentTime === 0) {
-      id("countdown").textContent = "Game start!"
+      id("countdown").textContent = "Game start!";
       getPrompt();
       clearTimer();
       setTimeout(startRound, 1000);
@@ -167,6 +167,9 @@
     if(currentTime === 0) {
       clearTimer();
       displayWinner(getOtherPlayer());
+      let timeText = document.createElement("p");
+      timeText.textContent = "Player " + getCurrentPlayer() + " ran out of time!";
+      id("game-result").appendChild(timeText);
     }
   }
 
@@ -258,7 +261,7 @@
     let response = qs("input.player" + getCurrentPlayer());
     let answerBox = qs("#player" + getCurrentPlayer() + "-ans p");
     answerBox.textContent = response.value;
-    currentWord = response.value;
+    currentWord = response.value.toLowerCase();
     response.value = "";
   }
 
@@ -292,14 +295,14 @@
    */
   function getAjaxData(){
     clearTimer();
-    let url = URL + currentWord.toLowerCase() + API_KEY;
+    let url = BASE_URL + currentWord + API_KEY;
 
     //start ajax call
     fetch(url)
       .then(checkStatus)
       .then(JSON.parse) // parse the json so the next "then" gets a JSON object
       .then(processJson)
-      .catch((error) => {
+      .catch(() => {
         displayWinner(getOtherPlayer());
         let description = document.createElement("p");
         description.textContent = currentWord + " is NOT a valid word!";
@@ -308,14 +311,13 @@
   }
 
   /**
-   *
-   * @param json - the JSON object that is was returned from the server
+   * @param {Object} json - the JSON object that is was returned from the server
    */
   function processJson(json){
     displayWinner(getCurrentPlayer());
     let shortDef = json[0]["shortdef"];
     let def = document.createElement("p");
-    def.textContent = "Definition of " + currentWord.toLowerCase() + ":";
+    def.textContent = "Definition of " + currentWord + ":";
     id("game-result").appendChild(def);
     let list = document.createElement("ol");
     for(let i = 0; i < shortDef.length; i++) {
@@ -345,15 +347,6 @@
   }
 
   /**
-   * Helper method for getting an array of elements by selector
-   * @param {String} selector - the selector used to select the target elements
-   * @return {Object[]} An array of elements in the DOM selected with the given selector
-   */
-  function qsa(selector) {
-    return document.querySelectorAll(selector);
-  }
-
-  /**
     * Helper function to return the response's result text if successful, otherwise
     * returns the rejected Promise result with an error status and corresponding text
     * @param {object} response - response to check for success/error
@@ -364,6 +357,9 @@
      if (response.status >= 200 && response.status < 300 || response.status == 0) {
        return response.text();
      } else {
+       let description = document.createElement("p");
+       description.textContent = "Error communicating with server";
+       id("game-result").append(description);
        return Promise.reject(new Error(response.status + ": " + response.statusText));
      }
    }
