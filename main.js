@@ -4,15 +4,18 @@
  * Section: CSE 154 AJ
  * This is the JavaScript for the Word Master game
  */
+/* global Set */
 (function() {
   "use strict";
 
   let timerID = null;
   let currentTime = 0;
   let playerOne = true;
-  let currentPrompt = "";
-  let currentWord = "";
-  const PROMPTS = ["DEF", "AB"];
+  let currentPrompt = null;
+  let currentWord = null;
+  let usedWords = new Set();
+  const PROMPTS = ["AB", "BR", "CHA", "DEF", "ES", "FR", "GE", "HO", "ID", "JA", "KI",
+                   "LE", "MO", "NU", "PR", "QE", "RA", "SW", "TI", "WI", "YE"];
   const BASE_URL = "https://www.dictionaryapi.com/api/v3/references/collegiate/json/";
   const API_KEY = "?key=e3135f72-2567-48c9-a6e6-ae4a3ef6b4b9";
   window.addEventListener("load", init);
@@ -44,6 +47,8 @@
    * Start the game and enter preparation stage
    */
   function startGame() {
+    usedWords.clear();
+    currentWord = null;
     currentTime = 5;
     playerOne = true;
     resetCanvas();
@@ -152,6 +157,9 @@
    */
   function startRound() {
     currentTime = 5;
+    if(currentWord != null) {
+      usedWords.add(currentWord);
+    }
     toggleRoundControls();
     qs("input.player" + getCurrentPlayer()).focus();
     updateRoundText();
@@ -218,8 +226,10 @@
    * Submits the response and starts the challenge round for the other player
    */
   function submit() {
-    checkResponse();
-    startChallenge();
+    displayResponse();
+    if(currentTime !== 0) {
+      startChallenge();
+    }
   }
 
   /**
@@ -228,12 +238,17 @@
   function challenge() {
     // Checks if the word given by the other player is valid (API calls)
     clearTimer();
-    if(currentWord.toUpperCase().startsWith(currentPrompt)) {
+    if(usedWords.has(currentWord)) {
+      displayWinner(getOtherPlayer());
+      let result = document.createElement("p");
+      result.textContent = currentWord + " has been used before!";
+      id("game-result").appendChild(result);
+    } else if(currentWord.toUpperCase().startsWith(currentPrompt)) {
       getAjaxData();
     } else {
       displayWinner(getOtherPlayer());
       let result = document.createElement("p");
-      result.textContent = currentWord+ " does not start with "
+      result.textContent = currentWord + " does not start with "
         + currentPrompt;
       id("game-result").appendChild(result);
     }
@@ -254,10 +269,9 @@
   }
 
   /**
-   * Checks if the response is valid, if so, displays it on the corresponding
-   * answer box
+   * Displays the response in the answer box
    */
-  function checkResponse() {
+  function displayResponse() {
     let response = qs("input.player" + getCurrentPlayer());
     let answerBox = qs("#player" + getCurrentPlayer() + "-ans p");
     answerBox.textContent = response.value;
