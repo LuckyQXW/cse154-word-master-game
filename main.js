@@ -14,6 +14,7 @@
   let currentPrompt = null;
   let currentWord = null;
   let usedWords = new Set();
+  let isValid = true;
   const PROMPTS = ["AB", "BR", "CHA", "DEF", "ES", "FR", "GE", "HO", "ID", "JA", "KI",
                    "LE", "MO", "NU", "PR", "QE", "RA", "SW", "TI", "WI", "YE"];
   const BASE_URL = "https://www.dictionaryapi.com/api/v3/references/collegiate/json/";
@@ -33,13 +34,14 @@
     id("start-over").addEventListener("click", backToMenu);
     qs("button.player1").addEventListener("click", submit);
     qs("button.player2").addEventListener("click", challenge);
+
+    // Enables submission with enter key stroke
     qs("input.player1").addEventListener("keyup", function(event) {
       const keyName = event.key;
       if (keyName === "Enter") {
         submit();
       }
     });
-    // Enables submission with enter key stroke
     qs("input.player2").addEventListener("keyup", function(event) {
       const keyName = event.key;
       if (keyName === "Enter") {
@@ -56,6 +58,7 @@
     currentWord = null;
     currentTime = ROUND_TIME;
     playerOne = true;
+    isValid = true;
     resetCanvas();
     id("game-view").classList.remove("hidden");
     id("menu-view").classList.add("hidden");
@@ -80,31 +83,6 @@
     let otherAnswerBox = qs("#player" + getOtherPlayer() + "-ans p");
     otherAnswerBox.textContent = "";
     otherResponse.value = "";
-
-  }
-
-  /**
-   * Gets the id of the player owning the current round
-   * @return {int} id of the player owning the current round
-   */
-  function getCurrentPlayer() {
-    return playerOne ? 1 : 2;
-  }
-
-  /**
-   * Gets the id of the opponent of the player owning the current round
-   * @return {int} id of the opponent of the player owning the current round
-   */
-  function getOtherPlayer() {
-    return playerOne ? 2 : 1;
-  }
-
-  /**
-   * Displays a random prompt on the header
-   */
-  function getPrompt() {
-    currentPrompt = PROMPTS[Math.floor(Math.random() * PROMPTS.length)];
-    qs("h1").textContent = "A word that starts with " + currentPrompt;
   }
 
   /**
@@ -122,6 +100,14 @@
   }
 
   /**
+   * Displays a random prompt on the header
+   */
+  function getPrompt() {
+    currentPrompt = PROMPTS[Math.floor(Math.random() * PROMPTS.length)];
+    qs("h1").textContent = "Give a word that starts with " + currentPrompt;
+  }
+
+  /**
    * Clears the running timer
    */
   function clearTimer() {
@@ -129,32 +115,6 @@
       clearInterval(timerID);
       timerID = null;
     }
-  }
-
-  /**
-   * Configures the controls for a regular round
-   */
-  function toggleRoundControls(){
-    let currentPlayer = getCurrentPlayer();
-    let otherPlayer = getOtherPlayer();
-    let currentSelector = ".player" + currentPlayer;
-    let otherSelector = ".player" + otherPlayer;
-
-    qs("button" + currentSelector).disabled = false;
-    qs("button" + currentSelector).textContent = "Submit";
-    qs("button" + currentSelector).classList.toggle("submit", 1);
-    qs("button" + currentSelector).classList.toggle("challenge", 0);
-    qs("button" + currentSelector).addEventListener("click", submit);
-    qs("button" + currentSelector).removeEventListener("click", challenge);
-    qs("input" + currentSelector).disabled = false;
-
-    qs("button" + otherSelector).disabled = true;
-    qs("button" + otherSelector).textContent = "Challenge!";
-    qs("button" + otherSelector).classList.toggle("challenge", 1);
-    qs("button" + otherSelector).classList.toggle("submit", 0);
-    qs("button" + otherSelector).addEventListener("click", challenge);
-    qs("button" + otherSelector).removeEventListener("click", submit);
-    qs("input" + otherSelector).disabled = true;
   }
 
   /**
@@ -172,6 +132,32 @@
   }
 
   /**
+   * Configures the controls for a regular round
+   */
+  function toggleRoundControls(){
+    let currentPlayer = getCurrentPlayer();
+    let otherPlayer = getOtherPlayer();
+    let currentSelector = ".player" + currentPlayer;
+    let otherSelector = ".player" + otherPlayer;
+
+    qs("button" + currentSelector).disabled = false;
+    qs("button" + currentSelector).textContent = "Submit";
+    qs("button" + currentSelector).classList.add("submit");
+    qs("button" + currentSelector).classList.remove("challenge");
+    qs("button" + currentSelector).addEventListener("click", submit);
+    qs("button" + currentSelector).removeEventListener("click", challenge);
+    qs("input" + currentSelector).disabled = false;
+
+    qs("button" + otherSelector).disabled = true;
+    qs("button" + otherSelector).textContent = "Challenge!";
+    qs("button" + otherSelector).classList.add("challenge");
+    qs("button" + otherSelector).classList.remove("submit");
+    qs("button" + otherSelector).addEventListener("click", challenge);
+    qs("button" + otherSelector).removeEventListener("click", submit);
+    qs("input" + otherSelector).disabled = true;
+  }
+
+  /**
    * Updates the round timer. If the round timer runs out, end the game
    */
   function updateRoundTimer() {
@@ -179,11 +165,38 @@
     updateRoundText();
     if(currentTime === 0) {
       clearTimer();
-      displayWinner(getOtherPlayer());
-      let timeText = document.createElement("p");
-      timeText.textContent = "Player " + getCurrentPlayer() + " ran out of time!";
-      id("game-result").appendChild(timeText);
+      displayWinner(getOtherPlayer(), "Player " + getCurrentPlayer()
+        + " ran out of time!");
     }
+  }
+
+  /**
+   * Updates the timer text during a regular response round
+   */
+  function updateRoundText() {
+    id("countdown").textContent = "Player " + getCurrentPlayer() + " must answer in "
+      + currentTime + " sec...";
+  }
+
+  /**
+   * Submits the response and starts the challenge round for the other player
+   */
+  function submit() {
+    displayResponse();
+    if(currentTime !== 0) {
+      startChallenge();
+    }
+  }
+
+  /**
+   * Displays the response in the answer box
+   */
+  function displayResponse() {
+    let response = qs("input.player" + getCurrentPlayer());
+    let answerBox = qs("#player" + getCurrentPlayer() + "-ans p");
+    answerBox.textContent = response.value;
+    currentWord = response.value.toLowerCase();
+    response.value = "";
   }
 
   /**
@@ -228,42 +241,98 @@
   }
 
   /**
-   * Submits the response and starts the challenge round for the other player
+   * Updates the timer text during the challenge round
    */
-  function submit() {
-    displayResponse();
-    if(currentTime !== 0) {
-      startChallenge();
-    }
+  function updateChallengeText() {
+    id("countdown").textContent = "Player " + getOtherPlayer() + " can challenge in "
+      + currentTime + " sec...";
   }
 
   /**
    * Judges whether the challenge is successful or not, and displays the result
    */
   function challenge() {
-    // Checks if the word given by the other player is valid (API calls)
     clearTimer();
     if(usedWords.has(currentWord)) {
-      displayWinner(getOtherPlayer());
-      let result = document.createElement("p");
-      result.textContent = currentWord + " has been used before!";
-      id("game-result").appendChild(result);
-    } else if(currentWord.toUpperCase().startsWith(currentPrompt)) {
-      getAjaxData();
+      // Check if the word is a repeated answer
+      displayWinner(getOtherPlayer(), currentWord + " has been used before!");
+    } else if(!currentWord.toUpperCase().startsWith(currentPrompt)) {
+      // Check if the word matches the current prompt
+      displayWinner(getOtherPlayer(), currentWord + " does not start with "
+        + currentPrompt);
     } else {
-      displayWinner(getOtherPlayer());
-      let result = document.createElement("p");
-      result.textContent = currentWord + " does not start with "
-        + currentPrompt;
-      id("game-result").appendChild(result);
+      getAjaxData();
+    }
+  }
+
+  /**
+   * Fetch the definition of the word, modified from Apod template
+   * Definition from Merriam-Webster's Collegiate Dictionary with Audio API
+   * https://www.dictionaryapi.com/products/api-collegiate-dictionary
+   */
+  function getAjaxData(){
+    qs("button.challenge").disabled = true;
+    clearTimer();
+    let url = BASE_URL + currentWord + API_KEY;
+
+    //start ajax call
+    fetch(url)
+      .then(checkStatus)
+      .then(checkValid)
+      .then(JSON.parse)
+      .then(processJson)
+      .catch(handleError);
+  }
+
+  /**
+   * Checks if the API returns a list of related words in the form of "[word, ...]",
+   * if so, the current word is invalid. Set the isValid flag to false to help catch
+   * distinguish between the word being invalid and error communicating with the API
+   * @param  {String} text - the text response from the API
+   * @return {String} the text response from the API
+   */
+  function checkValid(text) {
+    if(text.startsWith("[")) {
+      isValid = false;
+    }
+    return text;
+  }
+
+  /**
+   * Processes the json object returned from API and displays definition of the
+   * current word
+   * @param {Object} json - the JSON object that is was returned from the server
+   */
+  function processJson(json){
+    displayWinner(getCurrentPlayer(), "Definition of " + currentWord + ":");
+    let shortDef = json[0]["shortdef"];
+    let list = document.createElement("ol");
+    for(let i = 0; i < shortDef.length; i++) {
+      let item = document.createElement("li");
+      item.textContent = shortDef[i];
+      list.appendChild(item);
+    }
+    id("game-result").appendChild(list);
+  }
+
+  /**
+   * Handles the error thrown during fetch, show whether the current word is invalid
+   * or error communicating with the API
+   */
+  function handleError() {
+    if(!isValid) {
+      displayWinner(getOtherPlayer(), currentWord + " is NOT a valid word!");
+    } else {
+      displayWinner(getOtherPlayer(), "Error communicating with the API");
     }
   }
 
   /**
    * Displays the winner of the game
    * @param  {int} winner - the winner of the game, 1 or 2
+   * @param  {String} message - the reason why the given player wins
    */
-  function displayWinner(winner) {
+  function displayWinner(winner, message) {
     clearTimer();
     id("game-result").innerHTML = "";
     let result = document.createElement("p");
@@ -271,33 +340,9 @@
     id("game-result").appendChild(result);
     id("game-result").classList.remove("hidden");
     id("start-over").classList.remove("hidden");
-  }
-
-  /**
-   * Displays the response in the answer box
-   */
-  function displayResponse() {
-    let response = qs("input.player" + getCurrentPlayer());
-    let answerBox = qs("#player" + getCurrentPlayer() + "-ans p");
-    answerBox.textContent = response.value;
-    currentWord = response.value.toLowerCase();
-    response.value = "";
-  }
-
-  /**
-   * Updates the timer text during a regular response round
-   */
-  function updateRoundText() {
-    id("countdown").textContent = "Player " + getCurrentPlayer() + " must answer in "
-      + currentTime + " sec...";
-  }
-
-  /**
-   * Updates the timer text during the challenge round
-   */
-  function updateChallengeText() {
-    id("countdown").textContent = "Player " + getOtherPlayer() + " can challenge in "
-      + currentTime + " sec...";
+    let description = document.createElement("p");
+    description.textContent = message;
+    id("game-result").appendChild(description);
   }
 
   /**
@@ -310,43 +355,19 @@
   }
 
   /**
-   * Fetch the definition of the word, modified from Apod template
-   * Definition from Merriam-Webster's Collegiate Dictionary with Audio API
-   * https://www.dictionaryapi.com/products/api-collegiate-dictionary
+   * Gets the id of the player owning the current round
+   * @return {int} id of the player owning the current round
    */
-  function getAjaxData(){
-    clearTimer();
-    let url = BASE_URL + currentWord + API_KEY;
-
-    //start ajax call
-    fetch(url)
-      .then(checkStatus)
-      .then(JSON.parse)
-      .then(processJson)
-      .catch(() => {
-        displayWinner(getOtherPlayer());
-        let description = document.createElement("p");
-        description.textContent = currentWord + " is NOT a valid word!";
-        id("game-result").append(description);
-      });
+  function getCurrentPlayer() {
+    return playerOne ? 1 : 2;
   }
 
   /**
-   * @param {Object} json - the JSON object that is was returned from the server
+   * Gets the id of the opponent of the player owning the current round
+   * @return {int} id of the opponent of the player owning the current round
    */
-  function processJson(json){
-    displayWinner(getCurrentPlayer());
-    let shortDef = json[0]["shortdef"];
-    let def = document.createElement("p");
-    def.textContent = "Definition of " + currentWord + ":";
-    id("game-result").appendChild(def);
-    let list = document.createElement("ol");
-    for(let i = 0; i < shortDef.length; i++) {
-      let item = document.createElement("li");
-      item.textContent = shortDef[i];
-      list.appendChild(item);
-    }
-    id("game-result").appendChild(list);
+  function getOtherPlayer() {
+    return playerOne ? 2 : 1;
   }
 
   /**
