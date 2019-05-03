@@ -311,6 +311,8 @@
 
   /**
    * Fetch the definition of the word, modified from Apod template
+   * Definition from Merriam-Webster's Collegiate Dictionary with Audio API
+   * https://www.dictionaryapi.com/products/api-collegiate-dictionary
    */
   function getAjaxData(){
     clearTimer();
@@ -377,9 +379,6 @@
      if (response.status >= 200 && response.status < 300 || response.status == 0) {
        return response.text();
      } else {
-       let description = document.createElement("p");
-       description.textContent = "Error communicating with server";
-       id("game-result").append(description);
        return Promise.reject(new Error(response.status + ": " + response.statusText));
      }
    }
