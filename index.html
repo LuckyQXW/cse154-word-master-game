@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<!--
+     Name: Wen Qiu
+     Date: May 1, 2019
+     Section: CSE 154 AJ
+     This is the index.html page for the Word Master game
+-->
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="stylesheet" href="style.css" />
+    <script src="main.js"></script>
+    <title>Word Master</title>
+  </head>
+
+  <body>
+    <header>
+      <h1>Word Master</h1>
+    </header>
+    <main>
+      <section id="menu-view">
+        <p>
+          Welcome to 2019 Word Master Competition!<br />
+          This is a 2-player game where players take turns to give words
+          that start with the given letters.<br />
+          Lets find out who is the REAL Word Master!
+        </p>
+        <section id="rules">
+          <div class="instruction-row flex">
+            <div id="submit-img" class="flex">
+              <span>Submit</span>
+            </div>
+            <p>Enter the word in the text box then click submit to show off your
+              great storage of vocabulary! No repeat!<br />
+              You will have 5 seconds.
+            </p>
+          </div>
+          <div class="instruction-row flex">
+            <div id="challenge-img" class="flex">
+              <span>Challenge!</span>
+            </div>
+            <p>If you believe the word given by your opponent is not valid or is repeated,
+              you can challenge them!<br />
+              You will have 3 seconds.
+            </p>
+          </div>
+          <div class="instruction-row flex" id="win-condition">
+            <p>A player wins if:</p>
+            <ol>
+              <li>Opponent fails to give a valid word within time constraint</li>
+              <li>Successfully challenges the word of their opponent</li>
+            </ol>
+          </div>
+        </section>
+        <button id="start">START!</button>
+      </section>
+
+      <section id="game-view" class="flex hidden">
+        <h2 id="countdown">Game starting in 5 sec...</h2>
+        <div id="canvas" class="flex">
+          <!-- Player images and answer boxes are self-made assets -->
+          <div class="player flex">
+            <img src="img/player1.png" alt="player1" />
+            <input class="player1" type="text" disabled />
+            <button class="submit player1" disabled>Submit</button>
+          </div>
+          <div id="middle" class="flex">
+            <div id="answer-area" class="flex">
+              <div id="player1-ans" class="answer">
+                <p>I will start first!</p>
+              </div>
+              <div id="player2-ans" class="answer">
+                <p></p>
+              </div>
+            </div>
+            <div id="game-result" class="hidden">
+              <p>Player 2 wins!</p>
+            </div>
+          </div>
+          <div class="player flex">
+            <img src="img/player2.png" alt="player2" />
+            <input class="player2" type="text" disabled />
+            <button class="challenge player2" disabled>Challenge!</button>
+          </div>
+        </div>
+        <button id="start-over" class="hidden">Start Over!</button>
+      </section>
+    </main>
+    <footer>
+      <p>
+        Word definitions from Merriam-Webster's
+        Collegiate Dictionary with Audio API
+      </p>
+    </footer>
+  </body>
+</html>

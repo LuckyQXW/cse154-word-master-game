@@ -1,0 +1,191 @@
+/*
+    Name: Wen Qiu
+    Date: May 1, 2019
+    Section: CSE 154 AJ
+    This is the style.css page for the Word Master game
+*/
+@import url('https://fonts.googleapis.com/css?family=Sunflower:300');
+
+body {
+  font-family: Sunflower, sans-serif;
+}
+
+h2 {
+  color: #3E3E3E;
+}
+
+input {
+  margin-top: 50px;
+  margin-bottom: 20px;
+}
+
+footer {
+  width: 100%;
+  position: fixed;
+  bottom: 0px;
+  z-index: -1;
+}
+
+header h1 {
+  margin-top: 20px;
+  margin-bottom: 20px;
+  font-size: 80px;
+}
+
+#rules {
+  border-style: solid;
+  border-color: #3E3E3E;
+  margin: 20px auto 20px auto;
+}
+
+#start-over {
+  margin-top: 20px;
+}
+
+#game-view {
+  justify-content: center;
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+
+#canvas {
+  justify-content: space-between;
+  width: 90%;
+  margin: auto;
+}
+
+#answer-area {
+  width: 100%;
+  justify-content: space-between;
+}
+
+#player1-ans {
+  background-image: url("img/player1-answer.png");
+  text-align: left;
+}
+
+#player2-ans {
+  background-image: url("img/player2-answer.png");
+  text-align: right;
+}
+
+#middle {
+  width: 75%;
+  align-items: center;
+}
+
+#menu-view ol {
+  margin: auto;
+  width: 60%;
+}
+
+#menu-view > p {
+  font-size: 30px;
+}
+
+#player1-ans p {
+  margin-left: 80px;
+}
+
+#player2-ans p {
+  margin-right: 80px;
+}
+
+.flex {
+  display: flex;
+}
+
+.hidden {
+  display: none;
+}
+
+.player {
+  justify-content: center;
+  align-items: center;
+}
+
+.answer {
+  width: 300px;
+  height: 150px;
+  background-repeat: no-repeat;
+  background-size: 100%;
+  text-align: left;
+}
+
+.instruction-row {
+  width: 90%;
+  margin: auto;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.instruction-row > p {
+  margin-left: 50px;
+}
+
+.player img {
+  width: 90px;
+  height: 230px;
+  margin-bottom: 30px;
+}
+
+header, main, button, input, footer p {
+  text-align: center;
+  font-size: 20px;
+}
+
+button, #submit-img, #challenge-img {
+  height: 50px;
+}
+
+button, #submit-img, #challenge-img, #game-result, #rules {
+  border-radius: 10px;
+}
+
+header, button, #challenge-img, #submit-img, #game-view, #game-result {
+  color: white;
+  text-align: center;
+}
+
+header, #game-result {
+  background-color: #3E3E3E;
+}
+
+#start, #start-over {
+  background-color: #3AA700;
+  margin-left: auto;
+  margin-right: auto;
+  width: 200px;
+}
+
+#rules, #game-result {
+  padding: 20px;
+  width: 80%;
+}
+
+#player1-ans p, #player2-ans p {
+  margin-top: 30px;
+}
+
+#game-view, #middle, .player {
+  flex-direction: column;
+}
+
+#start, #submit-img, #challenge-img, .submit, .challenge {
+  flex: 0 0 100px;
+  justify-content: center;
+  align-items: center;
+}
+
+#submit-img, .submit {
+  background-color: #A80000;
+}
+
+#challenge-img, .challenge {
+  background-color: #FFAA22;
+}
+
+button.player1, button.player2 {
+  flex: 0 0 50px;
+  width: 120px;
+}
