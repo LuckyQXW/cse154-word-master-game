@@ -1,3 +1,21 @@
+# Word Master Game
+## Motivation
+The goal of this project is to practice fetching results and processing response from API calls. I was given several API options and since English is my second language, I decided to build a two-player game that makes players go back and forth and give words that start with the given letters with the hope that it can expand the vocabulary of both players as they continue playing. If one player fails to give a word within time constraints or, gives an invalid word and is challenged by their opponent (verified by an API call to the Webster-Merriam Dictionary API), they lose the game. 
+
+## Process
+I first did some wireframing on paper and sketched out the flow of the game. Then I designed the interface in Adobe XD to create some custom assets and visualize the layout. It turns out to save a lot of time since when I have doubts on what the interface should look like while styling the page, I can always refer back to my design.
+
+There were several challenges as I was implementing the game. At first I just put in a lot of different timers only to realize that they created many bugs in the program. I had to step back and reexamine my flow and thought about when a new timer should start and when the old timer should stop. In the end, only one timer was necessary due to the linearity of the game. 
+
+I also did a lot of play testing myself and with my friends to make sure the time I gave to each player is optimal, i.e. create a sense of pressure while providing enough time for them to think. I landed on 5 seconds of answer time and 3 seconds of challenge time. Since the time is very limited, I also preset the focus of the textfields based on which player is answering and disable the other. It helps to avoid potential bugs introduced by user error and allows player to focus on keyboard instead of needing to manually click on their own answer box first. 
+
+To avoid breaking the layout, I also decided to only display the first definition returned from the API call. While testing the GET requests, I found that the Webster-Merriam Dictionary API will return a list of possible words if the given word is invalid, so I used it to determine if the challenge is successful or not. GET requests are very easy to test by changing the URL in the chrome browser. 
+
+## Takeaways
++ Design the interface and determine user flow before diving into implementation
++ Manage timers properly
++ Test different API calls and be familiar with the response of GET requests by changing the URL
+
 # Creative Project 3 Project Specification
 ## Overview
 For your third Creative Project, you will explore different API's available as public web services
